@@ -1,0 +1,417 @@
+// supabase/functions/_shared/validarDisponibilidade.ts
+// Lógica adaptada ao schema do LOVABLE
+// Tabelas: disponibilidade_semanal, bloqueios_agenda, agendamentos, clinicas
+
+import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+
+// ─────────────────────────────────────────────
+// IDs das clínicas no banco do Lovable
+// ─────────────────────────────────────────────
+export const CLINICAS: Record<string, { id: string; nome: string }> = {
+  clinicor: {
+    id: "657e4784-e292-45c6-a033-40f3d115f984",
+    nome: "Clinicor – Paragominas",
+  },
+  hgp: {
+    id: "5f2f3bcb-5945-4220-912a-4d7c79b9b056",
+    nome: "Hospital Geral de Paragominas",
+  },
+  iob: {
+    id: "f72d4685-7e91-4b27-b4e6-8c47db742bef",
+    nome: "Instituto de Olhos de Belém (IOB)",
+  },
+  vitria: {
+    id: "dee8244b-a4f0-492a-aa59-89cfb8848463",
+    nome: "Vitria Oftalmologia",
+  },
+};
+
+// ─────────────────────────────────────────────
+// Tipos
+// ─────────────────────────────────────────────
+export interface SlotDisponivel {
+  horario: string;       // HH:MM
+  data_hora: string;     // ISO 8601
+  local: string;         // Nome da clínica
+  clinica_id: string;
+  dia_semana: string;
+}
+
+export interface ResultadoValidacao {
+  disponivel: boolean;
+  motivo?: string;
+  codigo?: string;
+}
+
+export interface ResultadoAgendamento {
+  sucesso: boolean;
+  agendamento_id?: string;
+  mensagem: string;
+  detalhes?: Record<string, unknown>;
+  erro?: string;
+}
+
+// ─────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────
+const DIAS_SEMANA: Record<number, string> = {
+  0: "Domingo",
+  1: "Segunda-feira",
+  2: "Terça-feira",
+  3: "Quarta-feira",
+  4: "Quinta-feira",
+  5: "Sexta-feira",
+  6: "Sábado",
+};
+
+export function getNomeDiaSemana(dia: number): string {
+  return DIAS_SEMANA[dia] || "Desconhecido";
+}
+
+/** Resolve nome do local para clinica_id */
+export function resolverClinica(local: string): { id: string; nome: string } | null {
+  const key = local.toLowerCase().trim()
+    .replace("hospital geral de paragominas", "hgp")
+    .replace("clinicor – paragominas", "clinicor")
+    .replace("clinicor - paragominas", "clinicor");
+
+  // Busca direta
+  if (CLINICAS[key]) return CLINICAS[key];
+
+  // Busca parcial
+  for (const [k, v] of Object.entries(CLINICAS)) {
+    if (key.includes(k) || v.nome.toLowerCase().includes(key)) return v;
+  }
+
+  return null;
+}
+
+/** Gera slots baseado na disponibilidade_semanal */
+export function gerarSlots(
+  data: string,
+  horaInicio: string,
+  horaFim: string,
+  intervaloMinutos: number,
+  clinicaId: string,
+  clinicaNome: string,
+  diaSemana: string
+): SlotDisponivel[] {
+  const slots: SlotDisponivel[] = [];
+  const [hI, mI] = horaInicio.split(":").map(Number);
+  const [hF, mF] = horaFim.split(":").map(Number);
+
+  let minAtual = hI * 60 + mI;
+  const minFim = hF * 60 + mF;
+
+  while (minAtual + intervaloMinutos <= minFim) {
+    const h = String(Math.floor(minAtual / 60)).padStart(2, "0");
+    const m = String(minAtual % 60).padStart(2, "0");
+    slots.push({
+      horario: `${h}:${m}`,
+      data_hora: `${data}T${h}:${m}:00-03:00`,
+      local: clinicaNome,
+      clinica_id: clinicaId,
+      dia_semana: diaSemana,
+    });
+    minAtual += intervaloMinutos;
+  }
+  return slots;
+}
+
+// ─────────────────────────────────────────────
+// Funções principais
+// ─────────────────────────────────────────────
+
+export function criarClienteSupabase(): SupabaseClient {
+  const url = Deno.env.get("SUPABASE_URL")!;
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  return createClient(url, key);
+}
+
+/** Lista horários disponíveis para uma data */
+export async function listarHorariosDisponiveis(
+  supabase: SupabaseClient,
+  data: string,
+  local?: string
+): Promise<SlotDisponivel[]> {
+  const dataObj = new Date(data + "T12:00:00-03:00");
+  const diaSemana = dataObj.getUTCDay();
+  const nomeDia = getNomeDiaSemana(diaSemana);
+
+  // Não permite datas passadas
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  if (new Date(data + "T00:00:00-03:00") < hoje) return [];
+
+  // Resolver clinica_id se local foi informado
+  let clinicaFilter: { id: string; nome: string } | null = null;
+  if (local) {
+    clinicaFilter = resolverClinica(local);
+    if (!clinicaFilter) return [];
+  }
+
+  // 1. Buscar disponibilidade_semanal (grade horária)
+  let query = supabase
+    .from("disponibilidade_semanal")
+    .select("*, clinicas(id, nome)")
+    .eq("dia_semana", diaSemana)
+    .eq("ativo", true);
+
+  if (clinicaFilter) {
+    query = query.eq("clinica_id", clinicaFilter.id);
+  }
+
+  const { data: disponibilidades, error: errD } = await query;
+  if (errD || !disponibilidades?.length) return [];
+
+  // 2. Buscar bloqueios para esta data
+  const { data: bloqueios } = await supabase
+    .from("bloqueios_agenda")
+    .select("clinica_id, hora_inicio, hora_fim")
+    .eq("data", data);
+
+  // 3. Buscar agendamentos existentes nesta data
+  const { data: agendamentos } = await supabase
+    .from("agendamentos")
+    .select("hora_agendamento, clinica_id")
+    .eq("data_agendamento", data)
+    .not("status_crm", "in", "(cancelado)");
+
+  const ocupados = new Set(
+    (agendamentos || []).map((a: any) => {
+      const h = String(a.hora_agendamento).substring(0, 5); // "HH:MM"
+      return `${a.clinica_id}|${h}`;
+    })
+  );
+
+  // 4. Gerar slots e filtrar
+  const todosSlots: SlotDisponivel[] = [];
+
+  for (const d of disponibilidades as any[]) {
+    const clinicaId = d.clinica_id;
+    const clinicaNome = d.clinicas?.nome || local || "Clínica";
+
+    // Verificar bloqueio total do dia para esta clínica
+    const bloqueioTotal = (bloqueios || []).some(
+      (b: any) =>
+        (b.clinica_id === clinicaId || b.clinica_id === null) &&
+        b.hora_inicio === null
+    );
+    if (bloqueioTotal) continue;
+
+    const slots = gerarSlots(
+      data,
+      d.hora_inicio,
+      d.hora_fim,
+      d.intervalo_minutos || 30,
+      clinicaId,
+      clinicaNome,
+      nomeDia
+    );
+
+    for (const slot of slots) {
+      const chave = `${clinicaId}|${slot.horario}`;
+
+      // Pular se ocupado
+      if (ocupados.has(chave)) continue;
+
+      // Pular se bloqueado parcialmente
+      const bloqueado = (bloqueios || []).some((b: any) => {
+        if (b.clinica_id !== clinicaId && b.clinica_id !== null) return false;
+        if (!b.hora_inicio || !b.hora_fim) return false;
+        const bInicio = b.hora_inicio.substring(0, 5);
+        const bFim = b.hora_fim.substring(0, 5);
+        return slot.horario >= bInicio && slot.horario < bFim;
+      });
+      if (bloqueado) continue;
+
+      // Se for hoje, pular horários passados (margem de 1h)
+      if (data === new Date().toISOString().split("T")[0]) {
+        const agora = new Date();
+        const slotDate = new Date(slot.data_hora);
+        if (slotDate.getTime() - agora.getTime() < 60 * 60 * 1000) continue;
+      }
+
+      todosSlots.push(slot);
+    }
+  }
+
+  return todosSlots.sort((a, b) =>
+    a.local === b.local
+      ? a.horario.localeCompare(b.horario)
+      : a.local.localeCompare(b.local)
+  );
+}
+
+/**
+ * Valida se um horário específico está disponível.
+ * Delega para a RPC canônica `verificar_slot_disponivel`, que consolida
+ * as três checagens (grade semanal, bloqueios, ocupação) em uma única
+ * consulta do servidor — única fonte de verdade compartilhada entre
+ * backend e UI.
+ */
+export async function validarDisponibilidade(
+  supabase: SupabaseClient,
+  data: string,
+  hora: string,
+  local: string
+): Promise<ResultadoValidacao> {
+  const clinica = resolverClinica(local);
+  if (!clinica) {
+    return {
+      disponivel: false,
+      motivo: `Clínica "${local}" não encontrada.`,
+      codigo: "CLINICA_INVALIDA",
+    };
+  }
+
+  // Postgres `time` aceita "HH:MM" e "HH:MM:SS". Normaliza para "HH:MM:SS"
+  // para evitar casting implícito.
+  const horaNormalizada = /^\d{2}:\d{2}$/.test(hora) ? `${hora}:00` : hora;
+
+  const { data: rows, error } = await supabase.rpc(
+    "verificar_slot_disponivel",
+    {
+      p_clinica_id: clinica.id,
+      p_data: data,
+      p_hora: horaNormalizada,
+    }
+  );
+
+  if (error) {
+    console.error("[validarDisponibilidade] RPC error:", error);
+    return {
+      disponivel: false,
+      motivo: "Erro ao validar disponibilidade.",
+      codigo: "ERRO_VALIDACAO",
+    };
+  }
+
+  const row = Array.isArray(rows) ? rows[0] : rows;
+  if (!row) {
+    return {
+      disponivel: false,
+      motivo: "Resposta vazia da validação.",
+      codigo: "ERRO_VALIDACAO",
+    };
+  }
+
+  if (row.disponivel) {
+    return { disponivel: true };
+  }
+
+  // Quando indisponível por ocupação, anexa até 5 alternativas do mesmo
+  // dia/clínica para UX.
+  let motivo = row.motivo ?? `Horário ${hora} no ${clinica.nome} indisponível.`;
+  if (row.codigo === "HORARIO_OCUPADO" || row.codigo === "HORARIO_BLOQUEADO") {
+    try {
+      const slots = await listarHorariosDisponiveis(supabase, data, local);
+      const alternativas = slots
+        .filter((s) => s.clinica_id === clinica.id)
+        .slice(0, 5)
+        .map((s) => s.horario);
+      if (alternativas.length > 0) {
+        motivo += ` Horários livres: ${alternativas.join(", ")}.`;
+      }
+    } catch (err) {
+      console.warn("[validarDisponibilidade] Falha ao listar alternativas:", err);
+    }
+  }
+
+  return {
+    disponivel: false,
+    motivo,
+    codigo: row.codigo ?? "HORARIO_INDISPONIVEL",
+  };
+}
+
+/** Cria agendamento usando schema do Lovable */
+export async function criarAgendamento(
+  supabase: SupabaseClient,
+  params: {
+    nome_completo: string;
+    telefone_whatsapp: string;
+    tipo_atendimento: string;
+    local_atendimento: string;
+    convenio: string;
+    data_agendamento: string;
+    hora_agendamento: string;
+  }
+): Promise<ResultadoAgendamento> {
+  const clinica = resolverClinica(params.local_atendimento);
+  if (!clinica) {
+    return {
+      sucesso: false,
+      mensagem: "Clínica não encontrada",
+      erro: `"${params.local_atendimento}" não é uma clínica válida. Use: HGP, Clinicor, IOB ou Vitria.`,
+    };
+  }
+
+  // 1. Validar disponibilidade
+  const validacao = await validarDisponibilidade(
+    supabase,
+    params.data_agendamento,
+    params.hora_agendamento,
+    params.local_atendimento
+  );
+
+  if (!validacao.disponivel) {
+    return {
+      sucesso: false,
+      mensagem: "Horário indisponível",
+      erro: validacao.motivo,
+    };
+  }
+
+  // 2. Definir convênio
+  const conveniosAceitos = ["bradesco", "unimed", "cassi", "sulamerica", "sulamérica"];
+  const convNorm = params.convenio.toLowerCase().replace(/\s/g, "");
+  const isConvenio = conveniosAceitos.includes(convNorm);
+
+  // 3. Inserir no schema do Lovable
+  const { data: agendamento, error: errA } = await supabase
+    .from("agendamentos")
+    .insert({
+      nome_completo: params.nome_completo,
+      telefone_whatsapp: params.telefone_whatsapp,
+      tipo_atendimento: params.tipo_atendimento || "consulta",
+      local_atendimento: clinica.nome,
+      clinica_id: clinica.id,
+      convenio: isConvenio ? params.convenio : null,
+      data_agendamento: params.data_agendamento,
+      hora_agendamento: params.hora_agendamento,
+      status_crm: "agendado",
+      origem: "mcp",
+      aceita_contato_whatsapp_email: true,
+      observacoes_internas: `Agendado via WhatsApp (Sofia IA) - ${new Date().toISOString()}`,
+    })
+    .select("id")
+    .single();
+
+  if (errA || !agendamento) {
+    return {
+      sucesso: false,
+      mensagem: "Erro ao criar agendamento",
+      erro: errA?.message || "Falha no insert",
+    };
+  }
+
+  const diaSemana = new Date(params.data_agendamento + "T12:00:00-03:00").getUTCDay();
+  const nomeDia = getNomeDiaSemana(diaSemana);
+  const dataFormatada = params.data_agendamento.split("-").reverse().join("/");
+
+  return {
+    sucesso: true,
+    agendamento_id: agendamento.id,
+    mensagem: `Consulta agendada com sucesso! ${nomeDia}, ${dataFormatada} às ${params.hora_agendamento} na ${clinica.nome}.`,
+    detalhes: {
+      data: dataFormatada,
+      horario: params.hora_agendamento,
+      local: clinica.nome,
+      clinica_id: clinica.id,
+      tipo: params.tipo_atendimento,
+      convenio: isConvenio ? params.convenio : "particular",
+      origem: "mcp",
+    },
+  };
+}

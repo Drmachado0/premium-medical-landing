@@ -1,0 +1,83 @@
+project_id = "cnpifhaszbonwlqruwnn"
+
+[functions.enviar-whatsapp]
+verify_jwt = false
+
+[functions.enviar-whatsapp-queue]
+verify_jwt = false
+
+[functions.enviar-whatsapp-imagem]
+verify_jwt = false
+
+[functions.notificar-n8n]
+verify_jwt = true
+
+[functions.gerar-mensagem-confirmacao]
+verify_jwt = true
+
+[functions.receber-whatsapp]
+verify_jwt = false
+
+[functions.confirmar-agendamento-whatsapp]
+verify_jwt = true
+
+[functions.lembrete-consulta-whatsapp]
+verify_jwt = false
+
+[functions.google-calendar-auth]
+verify_jwt = true
+
+[functions.google-calendar-callback]
+verify_jwt = false
+
+[functions.google-calendar-sync]
+verify_jwt = true
+
+[functions.notificar-agendamento-email]
+verify_jwt = true
+
+[functions.enviar-confirmacao-whatsapp]
+verify_jwt = false
+
+[functions.criar-agendamento]
+verify_jwt = false
+
+[functions.criar-lead]
+verify_jwt = false
+
+[functions.sincronizar-avaliacoes-google]
+verify_jwt = false
+
+[functions.verificar-status-evolution]
+verify_jwt = false
+
+[functions.gerenciar-conexao-evolution]
+verify_jwt = false
+
+[functions.validar-agendamento]
+verify_jwt = false
+
+[functions.migrar-atendidos]
+verify_jwt = false
+
+[functions.enviar-boas-vindas-lead]
+verify_jwt = false
+
+[functions.buscar-pacientes-saudevianet]
+verify_jwt = false
+
+[functions.listar-horarios-disponiveis]
+verify_jwt = false
+
+[functions.listar-datas-disponiveis]
+verify_jwt = false
+
+[functions.cancelar-agendamento]
+verify_jwt = false
+
+[functions.mcp-agendamento]
+verify_jwt = false
+
+[functions.converter-lead-agendamento]
+verify_jwt = false
+
