@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { CheckCircle2, MessageCircle, MapPin, Clock } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -51,106 +51,103 @@ const Obrigado = () => {
         />
       </Helmet>
 
-      <main className="hero-gradient noise-overlay relative min-h-screen overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-60"
-          style={{
-            background:
-              "radial-gradient(60% 50% at 50% 0%, hsl(42 85% 54% / 0.10), transparent 70%)",
-          }}
-        />
-
-        <div className="container relative z-10 mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="animate-scale-in relative mb-8">
-            <span
-              aria-hidden="true"
-              className="absolute inset-0 -m-4 rounded-full bg-primary/15 blur-2xl"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute inset-0 -m-2 rounded-full border border-primary/30"
-            />
-            <CheckCircle2
-              className="relative h-20 w-20 text-primary"
-              strokeWidth={1.5}
-            />
+      <main className="paper-grain relative min-h-screen overflow-hidden">
+        <div className="container mx-auto flex min-h-screen max-w-3xl flex-col px-4 py-16 sm:px-6 lg:px-8">
+          {/* Masthead */}
+          <div className="mb-20 flex items-baseline justify-between border-b border-border pb-6 pt-8 opacity-0 animate-fade-in animation-delay-100">
+            <div className="flex items-baseline gap-4">
+              <span className="section-number">§§</span>
+              <span className="kicker">Confirmação</span>
+            </div>
+            <span className="kicker-muted">Consulta</span>
           </div>
 
-          <p className="animate-fade-in animation-delay-100 mb-3 text-xs uppercase tracking-[0.2em] text-primary/80">
-            Tudo certo
-          </p>
-
-          <h1 className="animate-slide-up animation-delay-200 mb-5 text-balance text-4xl font-bold leading-[1.1] md:text-5xl">
-            <span className="gradient-text">Solicitação recebida!</span>
-          </h1>
-
-          <p className="animate-slide-up animation-delay-300 mb-10 max-w-md text-balance text-base leading-relaxed text-muted-foreground md:text-lg">
-            Sua consulta com o Dr. Juliano Machado foi solicitada com sucesso.
-            Nossa equipe entrará em contato pelo WhatsApp para confirmar o
-            melhor horário.
-          </p>
-
-          <div className="animate-slide-up animation-delay-400 card-premium noise-overlay mb-10 w-full max-w-md space-y-4 rounded-2xl p-6 text-left">
-            <div className="flex items-start gap-3">
-              <MessageCircle
-                aria-hidden="true"
-                className="mt-0.5 h-5 w-5 shrink-0 text-primary"
-              />
-              <p className="text-sm leading-relaxed text-foreground/90">
-                Nossa equipe entrará em contato para confirmar o agendamento.
-              </p>
-            </div>
-            <div className="flex items-start gap-3">
-              <MapPin
-                aria-hidden="true"
-                className="mt-0.5 h-5 w-5 shrink-0 text-primary"
-              />
-              <p className="text-sm leading-relaxed text-foreground/90">
-                Paragominas e Belém, PA
-              </p>
-            </div>
-            <div className="flex items-start gap-3">
-              <Clock
-                aria-hidden="true"
-                className="mt-0.5 h-5 w-5 shrink-0 text-primary"
-              />
-              <p className="text-sm leading-relaxed text-foreground/90">
-                Confirmação enviada pelo WhatsApp em minutos.
-              </p>
-            </div>
-          </div>
-
-          <a
-            href="https://wa.me/5591936180476?text=Ol%C3%A1!%20Acabei%20de%20solicitar%20minha%20consulta%20com%20o%20Dr.%20Juliano%20Machado."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="animate-slide-up animation-delay-500 w-full max-w-md"
-          >
-            <Button variant="whatsapp" size="lg" className="w-full gap-2">
-              <MessageCircle aria-hidden="true" className="h-5 w-5" />
-              Falar pelo WhatsApp
-            </Button>
-          </a>
-
-          <Link
-            to="/"
-            className="ease-out-expo mt-6 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            ← Voltar ao site
-          </Link>
-
-          <footer className="mt-16 space-y-1 text-center text-xs text-muted-foreground/70">
-            <p className="font-serif text-sm text-foreground/80">
-              Dr. Juliano Machado
+          {/* Main */}
+          <div className="flex flex-1 flex-col items-start justify-center">
+            <p className="kicker mb-6 opacity-0 animate-slide-up animation-delay-200">
+              Tudo certo
             </p>
-            <p>Oftalmologista · CRM-PA 12345</p>
-            <p>Cirurgia de Catarata · Glaucoma · Retina</p>
+
+            <h1 className="mb-10 text-[clamp(2.5rem,7vw,5.5rem)] leading-[0.95] tracking-[-0.03em] opacity-0 animate-slide-up animation-delay-300">
+              <span className="block text-foreground">Sua solicitação</span>
+              <span className="display-italic block text-ochre">foi recebida.</span>
+            </h1>
+
+            <hr className="rule w-full mb-10 opacity-0 animate-fade-in animation-delay-400" />
+
+            <div className="mb-12 max-w-xl opacity-0 animate-slide-up animation-delay-500">
+              <p className="dropcap text-base leading-[1.7] text-foreground/85 md:text-lg">
+                Nossa equipe entrará em contato pelo WhatsApp em poucos
+                minutos para confirmar o melhor horário. Se preferir, inicie a
+                conversa agora mesmo — estamos aqui.
+              </p>
+            </div>
+
+            {/* Info list — editorial */}
+            <div className="mb-14 grid w-full max-w-xl gap-0 border-y border-border opacity-0 animate-slide-up animation-delay-600">
+              <InfoRow
+                num="i."
+                label="Confirmação"
+                value="Em até 2h úteis, via WhatsApp"
+              />
+              <InfoRow
+                num="ii."
+                label="Locais"
+                value="Paragominas e Belém, PA"
+              />
+              <InfoRow
+                num="iii."
+                label="Observação"
+                value="Cancele quando quiser, sem custo"
+              />
+            </div>
+
+            <div className="flex flex-col gap-4 opacity-0 animate-slide-up animation-delay-700 sm:flex-row sm:items-center">
+              <a
+                href="https://wa.me/5591936180476?text=Ol%C3%A1!%20Acabei%20de%20solicitar%20minha%20consulta%20com%20o%20Dr.%20Juliano%20Machado."
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="hero" size="lg" className="gap-2">
+                  <MessageCircle aria-hidden="true" className="h-4 w-4" />
+                  Falar no WhatsApp
+                </Button>
+              </a>
+              <Link to="/" className="link-editorial">
+                ← Voltar ao site
+              </Link>
+            </div>
+          </div>
+
+          {/* Colophon */}
+          <footer className="mt-20 border-t border-border pt-6 text-xs text-muted-foreground">
+            <div className="flex items-baseline justify-between">
+              <span className="font-serif text-sm italic text-foreground">
+                Dr. Juliano Machado
+              </span>
+              <span>CRM-PA · Oftalmologista</span>
+            </div>
           </footer>
         </div>
       </main>
     </>
   );
 };
+
+interface InfoRowProps {
+  num: string;
+  label: string;
+  value: string;
+}
+
+const InfoRow = ({ num, label, value }: InfoRowProps) => (
+  <div className="grid grid-cols-[auto_1fr_auto] items-baseline gap-6 border-b border-border/60 py-4 last:border-b-0 sm:gap-10">
+    <span className="font-serif text-xs italic text-primary">{num}</span>
+    <span className="kicker-muted">{label}</span>
+    <span className="font-serif text-sm text-foreground md:text-base">
+      {value}
+    </span>
+  </div>
+);
 
 export default Obrigado;

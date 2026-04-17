@@ -1,5 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from "react";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -41,76 +41,75 @@ class ErrorBoundary extends Component<Props, State> {
     if (!this.state.hasError) return this.props.children;
 
     return (
-      <main className="hero-gradient noise-overlay relative flex min-h-screen items-center justify-center overflow-hidden px-4">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-60"
-          style={{
-            background:
-              "radial-gradient(55% 45% at 50% 40%, hsl(0 80% 58% / 0.10), transparent 70%)",
-          }}
-        />
-
-        <div className="container relative z-10 mx-auto max-w-xl text-center">
-          <div className="animate-scale-in mb-8 inline-flex">
-            <span className="relative flex h-16 w-16 items-center justify-center rounded-full border border-destructive/30 bg-card/60 backdrop-blur-sm">
-              <span
-                aria-hidden="true"
-                className="absolute inset-0 -m-2 rounded-full bg-destructive/10 blur-xl"
-              />
-              <AlertTriangle
-                aria-hidden="true"
-                className="relative h-8 w-8 text-destructive"
-                strokeWidth={1.5}
-              />
-            </span>
+      <main className="paper-grain relative flex min-h-screen flex-col">
+        <div className="container mx-auto flex flex-1 flex-col px-4 py-16 sm:px-6 lg:px-8 max-w-3xl">
+          {/* Masthead */}
+          <div className="mb-20 flex items-baseline justify-between border-b border-border pb-6 pt-8">
+            <div className="flex items-baseline gap-4">
+              <span className="section-number text-oxblood">erro</span>
+              <span className="kicker text-oxblood">Falha</span>
+            </div>
+            <span className="kicker-muted">Erro inesperado</span>
           </div>
 
-          <p className="animate-fade-in animation-delay-100 mb-3 text-xs uppercase tracking-[0.2em] text-destructive/80">
-            Erro inesperado
-          </p>
+          <div className="flex flex-1 flex-col items-start justify-center">
+            <p className="kicker mb-6 text-oxblood">Aviso editorial</p>
 
-          <h1 className="animate-slide-up animation-delay-200 mb-5 text-balance text-3xl font-bold leading-[1.1] md:text-4xl">
-            <span className="gradient-text">Algo deu errado</span>
-          </h1>
+            <h1 className="mb-10 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] tracking-[-0.03em]">
+              <span className="block text-foreground">Algo deu errado</span>
+              <span className="display-italic block text-oxblood">
+                nesta página.
+              </span>
+            </h1>
 
-          <p className="animate-slide-up animation-delay-300 mb-10 text-balance text-base leading-relaxed text-muted-foreground md:text-lg">
-            Ocorreu um erro inesperado ao carregar esta página. Tente recarregar
-            ou voltar ao início — se o problema persistir, fale conosco pelo
-            WhatsApp.
-          </p>
+            <hr className="rule mb-10 w-full" />
 
-          <div className="animate-slide-up animation-delay-400 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button
-              variant="hero"
-              size="lg"
-              className="gap-2"
-              onClick={this.handleReload}
-            >
-              <RefreshCw aria-hidden="true" className="h-4 w-4" />
-              Recarregar página
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={this.handleGoHome}
-            >
-              Voltar ao início
-            </Button>
+            <p className="mb-12 max-w-xl text-base leading-[1.7] text-foreground/85 md:text-lg">
+              Ocorreu um erro inesperado ao carregar esta página. Tente
+              recarregar ou voltar ao início — se o problema persistir, fale
+              conosco pelo WhatsApp.
+            </p>
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <Button
+                variant="hero"
+                size="lg"
+                className="gap-2"
+                onClick={this.handleReload}
+              >
+                <RefreshCw aria-hidden="true" className="h-4 w-4" />
+                Recarregar página
+              </Button>
+              <button
+                onClick={this.handleGoHome}
+                className="link-editorial"
+              >
+                ou voltar ao início →
+              </button>
+            </div>
+
+            {import.meta.env.DEV && this.state.error ? (
+              <details className="mt-16 w-full max-w-2xl border-y border-border py-4 text-xs text-muted-foreground">
+                <summary className="cursor-pointer font-serif text-base italic text-foreground/80">
+                  Detalhes do erro (dev)
+                </summary>
+                <pre className="mt-3 overflow-auto whitespace-pre-wrap break-words font-mono text-[0.7rem]">
+                  {this.state.error.message}
+                  {"\n\n"}
+                  {this.state.error.stack}
+                </pre>
+              </details>
+            ) : null}
           </div>
 
-          {import.meta.env.DEV && this.state.error ? (
-            <details className="mt-10 rounded-xl border border-border/50 bg-card/60 p-4 text-left text-xs text-muted-foreground">
-              <summary className="cursor-pointer font-medium text-foreground/80">
-                Detalhes do erro (modo dev)
-              </summary>
-              <pre className="mt-3 overflow-auto whitespace-pre-wrap break-words font-mono">
-                {this.state.error.message}
-                {"\n\n"}
-                {this.state.error.stack}
-              </pre>
-            </details>
-          ) : null}
+          <footer className="mt-20 border-t border-border pt-6 text-xs text-muted-foreground">
+            <div className="flex items-baseline justify-between">
+              <span className="font-serif text-sm italic text-foreground">
+                Dr. Juliano Machado
+              </span>
+              <span>CRM-PA · Oftalmologista</span>
+            </div>
+          </footer>
         </div>
       </main>
     );

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Award, Users, Star, Shield, CalendarCheck, ChevronDown } from "lucide-react";
+import { CalendarCheck, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import drJulianoHero from "@/assets/dr-juliano-hero.png";
 import { useGoogleTag } from "@/hooks/useGoogleTag";
@@ -12,7 +12,6 @@ const HeroSection = ({ onScheduleClick }: HeroSectionProps) => {
   const { trackCTAClick } = useGoogleTag();
   const [count, setCount] = useState(0);
 
-  // Animated counter for patients
   useEffect(() => {
     const target = 6000;
     const duration = 2000;
@@ -28,174 +27,140 @@ const HeroSection = ({ onScheduleClick }: HeroSectionProps) => {
   }, []);
 
   return (
-    <section className="relative min-h-[75dvh] flex items-center pt-24 sm:pt-24 pb-10 hero-gradient noise-overlay overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Radial glow behind photo area */}
-        <div className="absolute top-1/3 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
-        {/* Accent teal glow — bottom right */}
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]" />
-        {/* Diagonal grid */}
-        <div className="absolute inset-0 opacity-[0.015]" style={{
-          backgroundImage: `linear-gradient(hsl(var(--primary) / 0.3) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / 0.3) 1px, transparent 1px)`,
-          backgroundSize: '80px 80px',
-          transform: 'rotate(45deg) scale(1.5)',
-          transformOrigin: 'center center',
-        }} />
-        {/* Decorative line */}
-        <div className="absolute top-0 left-1/3 w-px h-24 bg-gradient-to-b from-transparent via-primary/20 to-transparent hidden lg:block" />
-      </div>
+    <section className="paper-grain relative overflow-hidden pt-28 pb-16 sm:pt-32 md:pt-36">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Masthead — editorial kicker */}
+        <div className="mb-10 flex items-center justify-between opacity-0 animate-fade-in animation-delay-100">
+          <span className="section-number">01</span>
+          <span className="kicker-muted hidden sm:inline">
+            Oftalmologia · Paragominas & Belém
+          </span>
+          <span className="kicker-muted font-serif italic">2026</span>
+        </div>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-[2fr_3fr] gap-8 lg:gap-14 items-center">
-          {/* Photo Column — left on desktop */}
-          <div className="flex justify-center lg:justify-end order-1 lg:order-1 lg:mt-8 opacity-0 animate-scale-in animation-delay-100 ease-out-expo">
-            <div className="relative noise-overlay">
-              {/* Glow ring */}
-              <div className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-primary/15 via-primary/5 to-transparent blur-2xl" />
+        <hr className="rule mb-14 opacity-0 animate-fade-in animation-delay-200" />
 
-              {/* Decorative iris circles */}
-              <div className="absolute -bottom-8 -left-8 w-[200px] h-[200px] rounded-full border border-primary/15 hidden lg:block" />
-              <div className="absolute -bottom-4 -left-4 w-[140px] h-[140px] rounded-full border border-primary/8 hidden lg:block" />
-
-              {/* Photo container */}
-              <div className="relative w-56 h-72 sm:w-64 sm:h-80 md:w-72 md:h-[22rem] lg:w-[22rem] lg:h-[28rem] rounded-[2rem] rounded-bl-[4rem] overflow-hidden border-2 border-primary/25 shadow-2xl shadow-primary/10">
-                <img
-                  src={drJulianoHero}
-                  alt="Dr. Juliano Machado - Médico Oftalmologista"
-                  className="w-full h-full object-cover object-top"
-                />
-                {/* Subtle overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/10 to-transparent" />
-              </div>
-
-              {/* Name tag below photo on mobile */}
-              <div className="text-center mt-4 lg:hidden">
-                <p className="text-foreground font-bold text-lg font-sans">Dr. Juliano Machado</p>
-                <p className="text-primary text-sm font-medium">Oftalmologista</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Content Column */}
-          <div className="text-center lg:text-left order-2 lg:order-2">
-            {/* Trust badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/8 border border-primary/15 mb-6 opacity-0 animate-blur-in animation-delay-300">
-              <Shield className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs text-muted-foreground font-medium uppercase tracking-[0.08em]">
-                Sociedade Brasileira de Oftalmologia
-              </span>
-            </div>
-
-            {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-extrabold leading-[1.08] mb-4 opacity-0 animate-slide-up animation-delay-400 tracking-[-0.02em]">
-               <span className="text-foreground">Enxergar bem</span>
-              <br />
-              <span className="gradient-text opacity-0 animate-reveal-up animation-delay-600">muda tudo</span>
-            </h1>
-
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-7 max-w-md mx-auto lg:mx-0 opacity-0 animate-slide-up animation-delay-500">
-              <span className="text-foreground font-semibold">Dr. Juliano Machado</span> já devolveu a clareza de visão para mais de 6.000 pacientes em{" "}
-              <span className="text-primary font-medium">Paragominas</span> e{" "}
-              <span className="text-primary font-medium">Belém</span>. Do primeiro exame à cirurgia, ele cuida de você.
+        <div className="grid items-start gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+          {/* Content column */}
+          <div className="order-2 lg:order-1">
+            <p className="kicker mb-8 opacity-0 animate-slide-up animation-delay-300">
+              Uma carta ao seu olhar
             </p>
 
-            {/* CTA */}
-            <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-8 opacity-0 animate-slide-up animation-delay-600">
+            <h1 className="mb-10 text-[clamp(3rem,7vw,6.5rem)] leading-[0.92] tracking-[-0.03em] opacity-0 animate-slide-up animation-delay-400">
+              <span className="block text-foreground">Enxergar bem,</span>
+              <span className="display-italic block text-ochre">
+                muda tudo.
+              </span>
+            </h1>
+
+            <div className="mb-12 max-w-xl space-y-5 opacity-0 animate-slide-up animation-delay-500">
+              <p className="text-base leading-[1.65] text-foreground/85 md:text-lg">
+                <span className="font-serif italic text-primary">
+                  Dr. Juliano Machado
+                </span>{" "}
+                devolveu clareza para mais de{" "}
+                <span className="tabular-nums font-medium text-foreground">
+                  {count.toLocaleString("pt-BR")}
+                </span>{" "}
+                pacientes em Paragominas e Belém. Do primeiro exame à
+                cirurgia — cada consulta é conduzida como uma conversa, não
+                como um procedimento.
+              </p>
+            </div>
+
+            <div className="mb-14 flex flex-col gap-3 sm:flex-row sm:items-center opacity-0 animate-slide-up animation-delay-600">
               <Button
                 variant="hero"
                 size="lg"
                 onClick={() => {
-                  trackCTAClick('agendar_consulta', 'hero', 'Agendar minha consulta');
+                  trackCTAClick("agendar_consulta", "hero", "Agendar consulta");
                   onScheduleClick();
                 }}
-                className="w-full sm:w-auto text-base py-6 sm:py-3 group relative overflow-hidden"
+                className="gap-2"
               >
-                <CalendarCheck className="w-5 h-5 mr-1" />
+                <CalendarCheck aria-hidden="true" className="h-4 w-4" />
                 Agendar consulta
-                <span className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
+
+              <button
+                type="button"
                 onClick={() => {
-                  trackCTAClick('saiba_mais', 'hero', 'Conhecer procedimentos');
-                  document.getElementById("procedimentos")?.scrollIntoView({ behavior: "smooth" });
+                  trackCTAClick("saiba_mais", "hero", "Ver procedimentos");
+                  document
+                    .getElementById("procedimentos")
+                    ?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="w-full sm:w-auto text-base py-6 sm:py-3 border-primary/35 text-primary/90 hover:border-primary/60 hover:text-primary"
+                className="link-editorial text-base"
               >
-                Ver procedimentos
-              </Button>
+                ou conhecer os procedimentos ↓
+              </button>
             </div>
 
-            {/* Stats cards */}
-            <div className="grid grid-cols-3 gap-4 opacity-0 animate-blur-in animation-delay-700">
-              <StatCard
-                icon={<Users className="w-4 h-4 text-primary" />}
-                value={`+${count.toLocaleString('pt-BR')}`}
-                label="pacientes atendidos"
+            {/* Credential strip */}
+            <div className="grid max-w-xl grid-cols-3 gap-0 divide-x divide-border border-y border-border opacity-0 animate-fade-in animation-delay-700">
+              <Figure
+                value={`${count.toLocaleString("pt-BR")}+`}
+                label="pacientes"
               />
-              <StatCard
-                icon={<Star className="w-4 h-4 text-primary fill-primary" />}
-                value="5.0"
-                label="nota máxima no Google"
-                highlight
-                extra={
-                  <svg className="w-3.5 h-3.5 ml-1" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                  </svg>
-                }
-              />
-              <StatCard
-                icon={<Award className="w-4 h-4 text-primary" />}
-                value="+13 anos"
-                label="de oftalmologia"
-              />
+              <Figure value="5.0" label="nota no Google" />
+              <Figure value="13" label="anos de clínica" />
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Scroll indicator */}
-      <button
-        onClick={() => document.getElementById("sobre")?.scrollIntoView({ behavior: "smooth" })}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-muted-foreground/40 hover:text-primary/60 transition-colors cursor-pointer animate-[float_3s_ease-in-out_infinite]"
-        style={{ animationTimingFunction: 'ease-in-out' }}
-        aria-label="Rolar para baixo"
-      >
-        <span className="text-xs uppercase tracking-[0.2em] font-medium font-sans">Conheça o Dr. Juliano</span>
-        <ChevronDown className="w-5 h-5" />
-      </button>
+          {/* Photo column */}
+          <div className="order-1 flex justify-center lg:order-2 lg:justify-end opacity-0 animate-scale-in animation-delay-300">
+            <figure className="relative">
+              <div className="relative h-[28rem] w-[21rem] overflow-hidden border border-border bg-card paper-grain sm:h-[32rem] sm:w-[24rem] lg:h-[36rem] lg:w-[26rem]">
+                <img
+                  src={drJulianoHero}
+                  alt="Dr. Juliano Machado, médico oftalmologista"
+                  className="h-full w-full object-cover object-top grayscale-[0.15] contrast-[1.05]"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent"
+                />
+              </div>
+              <figcaption className="mt-4 flex items-baseline justify-between gap-4 border-b border-border pb-3">
+                <span className="font-serif text-lg italic text-foreground">
+                  Dr. Juliano Machado
+                </span>
+                <span className="caption">CRM-PA · Oftalmologista</span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        {/* Scroll cue */}
+        <button
+          onClick={() =>
+            document
+              .getElementById("sobre")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+          className="mt-20 hidden items-center gap-3 text-muted-foreground transition-colors hover:text-primary lg:inline-flex"
+          aria-label="Rolar para a próxima seção"
+        >
+          <span className="kicker-muted">Continuar leitura</span>
+          <ChevronDown aria-hidden="true" className="h-4 w-4" />
+        </button>
+      </div>
     </section>
   );
 };
 
-/* ---------- Sub-component ---------- */
-
-interface StatCardProps {
-  icon: React.ReactNode;
+interface FigureProps {
   value: string;
   label: string;
-  extra?: React.ReactNode;
-  highlight?: boolean;
 }
 
-const StatCard = ({ icon, value, label, extra, highlight }: StatCardProps) => (
-  <div className={`card-shimmer flex flex-col items-center lg:items-start gap-1 px-3 py-3 rounded-xl backdrop-blur-sm ${
-    highlight
-      ? 'bg-primary/5 border border-primary/30'
-      : 'bg-card/50 border border-border/40'
-  }`}>
-    <div className="flex items-center gap-1.5">
-      {icon}
-      <span className="text-lg lg:text-xl font-bold text-foreground tabular-nums">{value}</span>
-      {extra}
-    </div>
-    <span className="text-xs text-muted-foreground leading-tight">{label}</span>
+const Figure = ({ value, label }: FigureProps) => (
+  <div className="flex flex-col items-start gap-1 px-4 py-5 first:pl-0">
+    <span className="font-serif text-3xl tabular-nums leading-none text-foreground md:text-4xl">
+      {value}
+    </span>
+    <span className="kicker-muted text-[0.65rem]">{label}</span>
   </div>
 );
 

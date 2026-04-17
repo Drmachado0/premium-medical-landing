@@ -46,13 +46,13 @@ const WhatsAppButton = () => {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => { trackWhatsAppClick(whatsappUrl, 'Fale conosco'); trackMetaContact('WhatsApp'); }}
-        className={`flex items-center gap-2.5 bg-[#25D366] text-white pl-4 pr-5 py-3.5 rounded-2xl shadow-xl shadow-[#25D366]/25 hover:shadow-2xl hover:shadow-[#25D366]/35 hover:scale-105 active:scale-100 transition-all duration-300 backdrop-blur-sm ring-2 ring-[#25D366]/20 ring-offset-2 ring-offset-background ${
+        className={`flex items-center gap-2.5 bg-[#25D366] text-white pl-4 pr-5 py-3 rounded-[2px] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/35 active:scale-[0.98] transition-all duration-200 ${
           pulseReady ? 'animate-whatsapp-pulse' : ''
         }`}
         aria-label="Fale conosco pelo WhatsApp"
       >
-        <MessageCircle className="w-5 h-5" />
-        <span className="font-semibold text-sm tracking-wide hidden sm:inline">Fale conosco</span>
+        <MessageCircle aria-hidden="true" className="w-5 h-5" />
+        <span className="font-medium text-sm hidden sm:inline">Fale conosco</span>
       </a>
     </div>
   );
