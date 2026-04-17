@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CalendarCheck, ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import drJulianoHero from "@/assets/dr-juliano-hero.png";
 import { useGoogleTag } from "@/hooks/useGoogleTag";
 
@@ -11,8 +11,27 @@ interface HeroSectionProps {
 const HeroSection = ({ onScheduleClick }: HeroSectionProps) => {
   const { trackCTAClick } = useGoogleTag();
   const [count, setCount] = useState(0);
+  const counterRef = useRef<HTMLDivElement>(null);
+  const [counterVisible, setCounterVisible] = useState(false);
 
   useEffect(() => {
+    const el = counterRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setCounterVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!counterVisible) return;
     const target = 6000;
     const duration = 2000;
     const start = Date.now();
@@ -24,7 +43,7 @@ const HeroSection = ({ onScheduleClick }: HeroSectionProps) => {
       if (progress >= 1) clearInterval(timer);
     }, 16);
     return () => clearInterval(timer);
-  }, []);
+  }, [counterVisible]);
 
   return (
     <section className="paper-grain relative overflow-hidden pt-28 pb-16 sm:pt-32 md:pt-36">
@@ -98,7 +117,10 @@ const HeroSection = ({ onScheduleClick }: HeroSectionProps) => {
             </div>
 
             {/* Credential strip */}
-            <div className="grid max-w-xl grid-cols-3 gap-0 divide-x divide-border border-y border-border opacity-0 animate-fade-in animation-delay-700">
+            <div
+              ref={counterRef}
+              className="grid max-w-xl grid-cols-3 gap-0 divide-x divide-border border-y border-border opacity-0 animate-fade-in animation-delay-700"
+            >
               <Figure
                 value={`${count.toLocaleString("pt-BR")}+`}
                 label="pacientes"
@@ -115,6 +137,9 @@ const HeroSection = ({ onScheduleClick }: HeroSectionProps) => {
                 <img
                   src={drJulianoHero}
                   alt="Dr. Juliano Machado, médico oftalmologista"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                   className="h-full w-full object-cover object-top grayscale-[0.15] contrast-[1.05]"
                 />
                 <div

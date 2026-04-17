@@ -153,6 +153,7 @@ const LocationsSection = () => {
           <div className="flex flex-col">
             <div className="relative h-[320px] border border-border bg-card sm:h-[420px]">
               <iframe
+                key={active.name}
                 src={active.mapUrl}
                 width="100%"
                 height="100%"

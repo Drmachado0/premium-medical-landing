@@ -45,7 +45,8 @@ const Index = () => {
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "5.0",
-      "reviewCount": "100"
+      "bestRating": "5",
+      "ratingCount": "100"
     }
   };
 
@@ -73,9 +74,15 @@ const Index = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none"
+        >
+          Pular para o conteúdo principal
+        </a>
         <Header onScheduleClick={openScheduling} />
-        
-        <main>
+
+        <main id="main">
           <HeroSection onScheduleClick={openScheduling} />
           <AboutSection />
           <ProceduresSection />

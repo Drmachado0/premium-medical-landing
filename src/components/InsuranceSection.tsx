@@ -160,6 +160,8 @@ const InsuranceSection = ({ onScheduleClick }: InsuranceSectionProps) => {
                   src={insurance.logo}
                   alt=""
                   aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
                   className="h-6 w-auto object-contain opacity-70 grayscale transition-opacity hover:opacity-100 hover:grayscale-0 sm:h-8"
                 />
               </div>

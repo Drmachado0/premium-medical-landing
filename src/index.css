@@ -451,6 +451,38 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* Respect user's motion preference — fail-safe if JS doesn't fire */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-slide-right,
+  .animate-slide-left,
+  .animate-scale-in,
+  .animate-blur-in,
+  .animate-reveal-up,
+  .animate-float,
+  .animate-pulse-slow,
+  .animate-shimmer,
+  .animate-whatsapp-pulse,
+  .animate-pulse-glow,
+  .animate-whatsapp-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+}
+
 /* Scrollbar — thin, editorial */
 ::-webkit-scrollbar {
   width: 8px;
