@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FormData } from "./SchedulingModal";
+import { FormData } from "./types";
 import { CheckCircle, Calendar, Sparkles } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";

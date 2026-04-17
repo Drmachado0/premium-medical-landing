@@ -15,25 +15,7 @@ import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { useMetaPixel } from "@/hooks/useMetaPixel";
 import { useGoogleTag } from "@/hooks/useGoogleTag";
-import type { FormData } from "@/components/scheduling/SchedulingModal";
-
-const initialFormData: FormData = {
-  fullName: "",
-  phone: "",
-  birthDate: "",
-  email: "",
-  appointmentType: "",
-  appointmentTypeName: "",
-  location: "",
-  locationName: "",
-  insurance: "",
-  insuranceName: "",
-  otherInsurance: "",
-  selectedDate: undefined,
-  selectedTime: "",
-  acceptFirstAvailable: false,
-  acceptNotifications: true,
-};
+import { type FormData, initialFormData } from "@/components/scheduling/types";
 
 const Agendar = () => {
   const [currentStep, setCurrentStep] = useState(1);

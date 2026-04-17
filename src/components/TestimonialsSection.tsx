@@ -17,7 +17,7 @@ interface Testimonial {
   source: "Google";
 }
 
-const AUTO_ROTATE_INTERVAL = 7000;
+const AUTO_ROTATE_INTERVAL = 10000;
 
 function convertToTestimonial(avaliacao: AvaliacaoGoogle): Testimonial {
   const initials = avaliacao.author_name

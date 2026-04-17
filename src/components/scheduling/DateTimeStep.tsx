@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { FormData } from "./SchedulingModal";
+import { FormData } from "./types";
 import CalendarGrid from "./CalendarGrid";
 import TimeSlotPicker from "./TimeSlotPicker";
 

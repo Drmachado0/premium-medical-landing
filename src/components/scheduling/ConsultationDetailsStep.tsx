@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { FormData } from "./SchedulingModal";
+import { FormData } from "./types";
 import { useState, useEffect } from "react";
 import { Stethoscope, MapPin, Shield, Loader2 } from "lucide-react";
 import { listarClinicas, Clinica } from "@/services/clinicas";
