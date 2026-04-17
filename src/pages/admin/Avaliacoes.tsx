@@ -692,7 +692,24 @@ const Avaliacoes = () => {
         .limit(50);
 
       if (error) throw error;
-      setHistorico((data as HistoricoAvaliacao[]) || []);
+
+      const historicoNormalizado: HistoricoAvaliacao[] = (data || []).map((item: any) => {
+        const agendamento = Array.isArray(item.agendamentos)
+          ? item.agendamentos[0] ?? null
+          : item.agendamentos ?? null;
+
+        return {
+          id: item.id,
+          telefone: item.telefone,
+          conteudo: item.conteudo,
+          created_at: item.created_at,
+          agendamentos: agendamento?.nome_completo
+            ? { nome_completo: agendamento.nome_completo }
+            : null,
+        };
+      });
+
+      setHistorico(historicoNormalizado);
     } catch (error) {
       console.error("Erro ao carregar histórico:", error);
     } finally {
