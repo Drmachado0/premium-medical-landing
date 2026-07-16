@@ -207,7 +207,7 @@ export function montarGradeAgenda(
 
     // Verificar se há agendamento
     const agendamento = agendamentos.find(a => {
-      const horaAgendamento = a.hora_agendamento.slice(0, 5);
+      const horaAgendamento = (a.hora_agendamento ?? '').slice(0, 5);
       return horaAgendamento === slot.horaFormatada;
     });
 
