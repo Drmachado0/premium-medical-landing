@@ -21,9 +21,9 @@
     --popover: 220 16% 11%;
     --popover-foreground: 210 20% 96%;
 
-    /* Single soft accent — desaturated steel/teal blue (clinical, premium) */
-    --primary: 196 62% 60%;
-    --primary-foreground: 220 25% 8%;
+    /* Single accent — modern sober royal/indigo blue */
+    --primary: 220 90% 56%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 220 12% 15%;
     --secondary-foreground: 210 20% 96%;
@@ -32,15 +32,15 @@
     --muted-foreground: 215 12% 65%;
 
     /* Unified accent — same tone as primary for consistency */
-    --accent: 196 62% 60%;
-    --accent-foreground: 220 25% 8%;
+    --accent: 220 90% 56%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 65% 55%;
     --destructive-foreground: 210 20% 96%;
 
     --border: 220 12% 18%;
     --input: 220 12% 18%;
-    --ring: 196 62% 60%;
+    --ring: 220 90% 56%;
 
     /* Softer, modern radius — cards, buttons, inputs */
     --radius: 0.75rem;
@@ -59,12 +59,12 @@
     /* Sidebar (admin) */
     --sidebar-background: 220 16% 10%;
     --sidebar-foreground: 210 20% 96%;
-    --sidebar-primary: 196 62% 60%;
-    --sidebar-primary-foreground: 220 25% 8%;
+    --sidebar-primary: 220 90% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 12% 15%;
     --sidebar-accent-foreground: 210 20% 96%;
     --sidebar-border: 220 12% 18%;
-    --sidebar-ring: 196 62% 60%;
+    --sidebar-ring: 220 90% 56%;
   }
 }
 
