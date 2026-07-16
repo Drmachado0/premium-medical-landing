@@ -43,7 +43,7 @@ const WhatsAppButton = () => {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => { trackWhatsAppClick(whatsappUrl, 'Fale conosco'); trackMetaContact('WhatsApp'); }}
-        className={`flex items-center gap-2.5 bg-[#25D366] text-white pl-4 pr-5 py-3 rounded-[2px] shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/35 active:scale-[0.98] transition-all duration-200 ${
+        className={`flex items-center gap-2.5 bg-[#25D366] text-white pl-4 pr-5 py-3 rounded-full shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:shadow-[#25D366]/40 hover:-translate-y-[1px] active:translate-y-0 transition-all duration-200 ${
           pulseReady ? 'animate-whatsapp-pulse' : ''
         }`}
         aria-label="Fale conosco pelo WhatsApp"

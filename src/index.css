@@ -7,62 +7,64 @@
 @layer base {
   :root {
     /* ============================================================
-       EDITORIAL DARK — warm graphite + ochre + oxblood
-       Designed as a prestige magazine: typography-led, no gradients
+       CLINICAL PREMIUM — cool neutral slate + single soft accent
+       Clean, airy, modern. Minimal color, soft radii, subtle depth.
        ============================================================ */
 
-    /* Warm graphite base — not navy, not black */
-    --background: 28 12% 8%;
-    --foreground: 35 25% 92%;
+    /* Neutral cool slate base */
+    --background: 220 18% 8%;
+    --foreground: 210 20% 96%;
 
-    --card: 28 12% 11%;
-    --card-foreground: 35 25% 92%;
+    --card: 220 16% 11%;
+    --card-foreground: 210 20% 96%;
 
-    --popover: 28 12% 11%;
-    --popover-foreground: 35 25% 92%;
+    --popover: 220 16% 11%;
+    --popover-foreground: 210 20% 96%;
 
-    /* Saturated ochre — single accent, used sparingly */
-    --primary: 32 65% 52%;
-    --primary-foreground: 28 15% 8%;
+    /* Single soft accent — desaturated steel/teal blue (clinical, premium) */
+    --primary: 196 62% 60%;
+    --primary-foreground: 220 25% 8%;
 
-    --secondary: 25 10% 15%;
-    --secondary-foreground: 35 25% 92%;
+    --secondary: 220 12% 15%;
+    --secondary-foreground: 210 20% 96%;
 
-    --muted: 25 8% 14%;
-    --muted-foreground: 30 10% 62%;
+    --muted: 220 12% 14%;
+    --muted-foreground: 215 12% 65%;
 
-    /* Oxblood — editorial punch, for callouts and emphasis */
-    --accent: 10 55% 40%;
-    --accent-foreground: 35 25% 92%;
+    /* Unified accent — same tone as primary for consistency */
+    --accent: 196 62% 60%;
+    --accent-foreground: 220 25% 8%;
 
-    --destructive: 0 65% 50%;
-    --destructive-foreground: 35 25% 92%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 210 20% 96%;
 
-    --border: 28 10% 17%;
-    --input: 28 10% 17%;
-    --ring: 32 65% 52%;
+    --border: 220 12% 18%;
+    --input: 220 12% 18%;
+    --ring: 196 62% 60%;
 
-    /* Editorial corners — sharp, not rounded */
-    --radius: 0.125rem;
+    /* Softer, modern radius — cards, buttons, inputs */
+    --radius: 0.75rem;
 
-    /* Editorial rules (horizontal separators) */
-    --rule: 28 8% 22%;
-    --rule-strong: 28 8% 32%;
+    /* Fine separators */
+    --rule: 220 10% 22%;
+    --rule-strong: 220 10% 32%;
 
     /* Atmospheric tokens */
-    --paper: 28 12% 10%;
-    --ink: 35 25% 92%;
-    --shadow-card: 0 1px 2px hsl(28 15% 3% / 0.4);
+    --paper: 220 16% 11%;
+    --ink: 210 20% 96%;
+    --shadow-card: 0 1px 2px hsl(220 30% 3% / 0.35), 0 8px 24px -12px hsl(220 30% 3% / 0.45);
+    --shadow-soft: 0 1px 2px hsl(220 30% 3% / 0.25);
+    --shadow-elevated: 0 8px 28px -12px hsl(220 30% 3% / 0.55);
 
     /* Sidebar (admin) */
-    --sidebar-background: 28 12% 10%;
-    --sidebar-foreground: 35 25% 92%;
-    --sidebar-primary: 32 65% 52%;
-    --sidebar-primary-foreground: 28 15% 8%;
-    --sidebar-accent: 25 10% 15%;
-    --sidebar-accent-foreground: 35 25% 92%;
-    --sidebar-border: 28 10% 17%;
-    --sidebar-ring: 32 65% 52%;
+    --sidebar-background: 220 16% 10%;
+    --sidebar-foreground: 210 20% 96%;
+    --sidebar-primary: 196 62% 60%;
+    --sidebar-primary-foreground: 220 25% 8%;
+    --sidebar-accent: 220 12% 15%;
+    --sidebar-accent-foreground: 210 20% 96%;
+    --sidebar-border: 220 12% 18%;
+    --sidebar-ring: 196 62% 60%;
   }
 }
 
@@ -78,22 +80,28 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    line-height: 1.6;
   }
 
   html {
     scroll-behavior: smooth;
   }
 
-  /* Editorial headings — Instrument Serif */
+  /* Modern hierarchical headings — Instrument Serif for display, tight tracking */
   h1, h2, h3, h4 {
     font-family: "Instrument Serif", "Fraunces", Georgia, serif;
     font-weight: 400;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
   }
 
   h1 {
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  h2 {
     letter-spacing: -0.025em;
-    line-height: 0.95;
   }
 
   /* Paragraph rhythm */
@@ -101,38 +109,38 @@
     font-feature-settings: "ss01", "cv01";
   }
 
-  /* Focus — editorial thin ring */
+  /* Focus — soft accent ring, always visible */
   :focus-visible {
-    @apply outline-1 outline-offset-4 outline-primary;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background rounded-md;
   }
 
   ::selection {
-    background: hsl(var(--primary) / 0.35);
+    background: hsl(var(--primary) / 0.3);
     color: hsl(var(--foreground));
   }
 }
 
 /* ==================================================================
-   EDITORIAL UTILITIES — kicker, dropcap, rule, section-number, etc.
+   UTILITIES — clean editorial rhythm helpers (kicker, rule, card)
    ================================================================== */
 
 @layer components {
   /* Section kicker — uppercase label above headlines */
   .kicker {
-    @apply font-sans text-xs uppercase;
-    letter-spacing: 0.24em;
+    @apply font-sans text-[0.7rem] uppercase;
+    letter-spacing: 0.22em;
     color: hsl(var(--primary));
     font-weight: 500;
   }
 
   .kicker-muted {
-    @apply font-sans text-xs uppercase;
-    letter-spacing: 0.24em;
+    @apply font-sans text-[0.7rem] uppercase;
+    letter-spacing: 0.22em;
     color: hsl(var(--muted-foreground));
     font-weight: 500;
   }
 
-  /* Section number — "§ 01" marker */
+  /* Section number — subtle marker */
   .section-number {
     @apply font-serif italic text-sm;
     color: hsl(var(--primary));
@@ -143,7 +151,7 @@
     font-style: normal;
   }
 
-  /* Editorial horizontal rule */
+  /* Horizontal rules */
   .rule {
     height: 1px;
     background: hsl(var(--rule));
@@ -156,7 +164,6 @@
     border: none;
   }
 
-  /* Double rule — classic editorial separator */
   .rule-double {
     height: 3px;
     border: none;
@@ -164,7 +171,7 @@
     border-bottom: 1px solid hsl(var(--rule));
   }
 
-  /* Drop cap — large italic first letter */
+  /* Drop cap — reserved for the About section */
   .dropcap::first-letter {
     font-family: "Instrument Serif", Georgia, serif;
     font-style: italic;
@@ -176,7 +183,7 @@
     font-weight: 400;
   }
 
-  /* Display serif italic — the signature editorial voice */
+  /* Signature italic — display voice */
   .display-italic {
     font-family: "Instrument Serif", Georgia, serif;
     font-style: italic;
@@ -184,42 +191,46 @@
     letter-spacing: -0.02em;
   }
 
-  /* Pull quote — large italic */
   .pull-quote {
     font-family: "Instrument Serif", Georgia, serif;
     font-style: italic;
     font-weight: 400;
     font-size: clamp(1.5rem, 3vw, 2.25rem);
-    line-height: 1.2;
+    line-height: 1.3;
     letter-spacing: -0.015em;
     color: hsl(var(--foreground));
   }
 
-  /* Caption — small sans italic for photo/figure credits */
   .caption {
     @apply font-sans text-xs italic;
     color: hsl(var(--muted-foreground));
     letter-spacing: 0.01em;
   }
 
-  /* Editorial card — sharp corners, thin border, subtle elevation */
+  /* Card — soft radius, thin border, subtle elevation */
   .editorial-card {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
     box-shadow: var(--shadow-card);
     border-radius: var(--radius);
+    transition: border-color 250ms ease, box-shadow 250ms ease, transform 250ms ease;
   }
 
-  /* Ochre text token */
+  .editorial-card:hover {
+    border-color: hsl(var(--primary) / 0.4);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  /* Semantic accent text tokens — unified around single accent */
   .text-ochre {
     color: hsl(var(--primary));
   }
 
   .text-oxblood {
-    color: hsl(var(--accent));
+    color: hsl(var(--primary));
   }
 
-  /* Editorial link — underlined, serif italic */
+  /* Editorial link — subtle underline, accent on hover */
   .link-editorial {
     font-family: "Instrument Serif", Georgia, serif;
     font-style: italic;
@@ -234,21 +245,9 @@
     color: hsl(var(--primary));
   }
 
-  /* Paper grain — subtle warm noise */
+  /* Paper grain — disabled for cleaner surface (kept as no-op for compat) */
   .paper-grain {
     position: relative;
-  }
-
-  .paper-grain::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    background-size: 180px 180px;
-    pointer-events: none;
-    z-index: 1;
-    mix-blend-mode: overlay;
-    opacity: 0.5;
   }
 
   /* Editorial blockquote */
@@ -259,7 +258,7 @@
     font-family: "Instrument Serif", Georgia, serif;
     font-style: italic;
     font-size: 1.125rem;
-    line-height: 1.5;
+    line-height: 1.55;
   }
 
   /* ============================================================
@@ -273,7 +272,7 @@
   }
 
   .gradient-text-accent {
-    color: hsl(var(--accent));
+    color: hsl(var(--primary));
     font-style: italic;
     font-family: "Instrument Serif", Georgia, serif;
   }
@@ -431,10 +430,10 @@
 
 @keyframes whatsapp-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5), 0 6px 18px -4px rgba(37, 211, 102, 0.35);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.45), 0 8px 24px -6px rgba(37, 211, 102, 0.3);
   }
   50% {
-    box-shadow: 0 0 0 10px rgba(37, 211, 102, 0), 0 6px 18px -4px rgba(37, 211, 102, 0.35);
+    box-shadow: 0 0 0 12px rgba(37, 211, 102, 0), 0 8px 24px -6px rgba(37, 211, 102, 0.3);
   }
 }
 
@@ -451,7 +450,7 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Respect user's motion preference — fail-safe if JS doesn't fire */
+/* Respect user's motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -483,7 +482,7 @@
   }
 }
 
-/* Scrollbar — thin, editorial */
+/* Scrollbar — thin, minimal */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -492,7 +491,7 @@
 }
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--border));
-  border-radius: 0;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.5);
