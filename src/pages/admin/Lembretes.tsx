@@ -1031,7 +1031,7 @@ const Lembretes = () => {
                         mode="single"
                         selected={dataFim}
                         onSelect={(date) => { setDataFim(date); setCalendarFimOpen(false); }}
-                        disabled={(date) => date > new Date() || (dataInicio && date < dataInicio)}
+                        disabled={(date) => date > new Date() || (dataInicio ? date < dataInicio : false)}
                         initialFocus
                         locale={ptBR}
                         className="pointer-events-auto"
